@@ -34,21 +34,21 @@
                                 <label for="" class="form-label h5">Nombre</label>
                                 <input value="{{ old('nombre') }} " type="text" class="@error('nombre') @enderror form-control form-control-lg " name="nombre" id="nombre" placeholder="Nombre del producto" autocomplete="off">
                                 @error('nombre')
-                                    <small class="text-danger invalid-feeback">{{ $message }}</small>
+                                    <small class="text-danger invalid-feedback">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label h5">Código</label>
                                 <input value="{{ old('sku') }}" type="text" class="@error('sku') @enderror form-control form-control-lg" name="sku" id="sku" placeholder="Ingrese el código del producto" autocomplete="off">
                                 @error('sku')
-                                    <small class="text-danger invalid-feeback">{{ $message }}</small>
+                                    <small class="text-danger invalid-feedback">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label h5">Precio</label>
                                 <input value="{{ old('precio') }}" type="text" class="@error('precio') @enderror form-control form-control-lg" name="precio" id="precio" placeholder="Precio" autocomplete="off">
                                 @error('precio')
-                                    <small class="text-danger invalid-feeback">{{ $message }}</small>
+                                    <small class="text-danger invalid-feedback">{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="mb-3">

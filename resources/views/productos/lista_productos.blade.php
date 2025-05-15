@@ -79,7 +79,6 @@
                                             </tr>
                                         @endforeach
                                     @endif
-                                <tbody>
                                 </tbody>
                             </table>
                         </div>
