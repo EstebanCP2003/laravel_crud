@@ -1,6 +1,6 @@
 pipeline {
     
-    agent { label 'agent1' }
+    agent any
 
     // Cada vez que haya commits en el repositorio, el pipeline se dispara automáticamente
     triggers {
