@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'agent4' }
 
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
     environment {
         COMPOSE_PROJECT_NAME = 'laravel_crud'
     }
@@ -22,30 +26,47 @@ pipeline {
             }
         }
 
-        stage('Install PHP Dependencies') {
+        stage('Levantar containers Laravel') {
             steps {
-                sh """
-                    docker run --rm \
-                        -v ${env.WORKSPACE}:/app \
-                        -w /app \
-                        composer:2 \
-                        composer install --no-interaction --prefer-dist
-                """
+                sh '''
+                    docker-compose up -d --build --force-recreate
+                '''
+            }
+        }
+
+        stage('Instalar dependencias Composer') {
+            steps {
+                sh '''
+                    docker-compose exec app bash -c "composer install --no-interaction --prefer-dist"
+                '''
+            }
+        }
+
+        stage('Preparar Laravel') {
+            steps {
+                sh '''
+                    docker-compose exec app bash -c "php artisan key:generate --ansi && php artisan migrate --force --ansi"
+                '''
+            }
+        }
+
+        stage('Ejecutar Dusk') {
+            steps {
+                sh '''
+                    docker-compose exec app bash -c "php artisan dusk --verbose --headless --disable-gpu"
+                '''
             }
         }
     }
 
     post {
-        always {
-            echo '🧹 Limpiando contenedores y volúmenes…'
-            sh 'docker-compose down -v || true'
-        }
         success {
-            echo '✅ Pipeline finalizado con éxito.'
+            echo '✅ ¡Todo salió bien!'
         }
         failure {
-            echo '❌ Algo falló en el pipeline.'
+            echo '❌ Algo falló.'
         }
     }
 }
+
 
