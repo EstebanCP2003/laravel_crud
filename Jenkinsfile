@@ -29,25 +29,19 @@ pipeline {
         
         stage('Install PHP Dependencies') {
             steps {
-                sh '''
-                docker-compose exec app bash -lc "composer install --no-interaction --prefer-dist"
-                '''
+                sh 'docker-compose exec app bash -lc "composer install --no-interaction --prefer-dist"'
             }
         }
 
         stage('Prepare Laravel') {
             steps {
-                sh '''
-                docker-compose exec app bash -lc "php artisan key:generate --ansi && php artisan migrate --force --ansi"
-                '''
+                sh 'docker-compose exec app bash -lc "php artisan key:generate --ansi && php artisan migrate --force --ansi"'
             }
         }
 
         stage('Run Dusk (10 Acceptance Tests)') {
             steps {
-                sh '''
-                docker-compose exec app bash -lc "php artisan dusk --verbose --headless --disable-gpu"
-                '''
+                sh 'docker-compose exec app bash -lc "php artisan dusk --verbose --headless --disable-gpu"'
             }
         }
 
