@@ -31,32 +31,43 @@ pipeline {
         stage('Instalar dependencias Composer') {
             steps {
                 sh '''
-                    docker run --rm -v $(pwd):/app -w /app composer:2 composer install --no-interaction --prefer-dist
+                    docker run --rm -v /home/jenkins/workspace/laravel:/app -w /app composer:2 composer install --no-interaction --prefer-dist
                 '''
             }
         }
 
         stage('Preparar Laravel') {
             steps {
-                sh '''
-                    php artisan key:generate --ansi
-                    php artisan migrate --force --ansi
-                '''
+                sh 'docker-compose exec app bash -lc "php artisan key:generate --ansi && php artisan migrate --force --ansi"'
             }
         }
 
         stage('Ejecutar Dusk') {
             steps {
+                sh 'docker-compose exec app bash -lc "php artisan dusk --verbose --headless --disable-gpu"'
+            }
+        }
+
+        stage('Deploy a Producción') {
+            when {
+                branch 'main'
+            }
+            steps {
                 sh '''
-                    php artisan dusk --verbose --headless --disable-gpu
+                    docker-compose down
+                    docker-compose up -d --build
                 '''
             }
         }
     }
 
     post {
+        always {
+            echo '🧹 Limpiando contenedores y volúmenes…'
+            sh 'docker-compose down -v || true'
+        }
         success {
-            echo '✅ Pipeline completado correctamente.'
+            echo '✅ Pipeline finalizado con éxito.'
         }
         failure {
             echo '❌ El pipeline falló.'
