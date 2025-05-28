@@ -29,8 +29,8 @@ pipeline {
 
         stage('Build & Start Containers') {
             steps {
-                sh 'docker compose down -v'
-                sh 'docker compose up -d --build --force-recreate'
+                sh 'docker-compose down -v'
+                sh 'docker-compose up -d --build --force-recreate'
             }
         }
 
