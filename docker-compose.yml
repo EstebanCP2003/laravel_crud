@@ -1,0 +1,83 @@
+version: "3.9"
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+      - "8080:8080"
+      - "5000:5000"
+    container_name: jenkins
+    volumes:
+     - ./jenkins-data:/var/jenkins_home
+     - /var/run/docker.sock:/var/run/docker.sock
+
+    expose:
+     - 4444
+  agent1:
+    build:
+      context: .
+      dockerfile: Dockerfile-agent
+    privileged: true
+    user: root
+    container_name: agent1
+    expose:
+      - 22
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+     - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCiXj2x6jKLPOG6DRcf8C99C1a1d3ZgJ2/yQCxdp5MwqLFQk6ZiRpBY6XyBxx2wZdFDRWEJQquw0M2rBufRuC9UlMH2+6nxqUy8OnjvJxj6mBKjAp+g9OpfrVQD/fouMqfiI3xBkvec6LaZUc8T0p1mKvrU4qKiryHHYCNhFM2LWNoyhemGtZeTYFGMdMWq+2l8pWqG8JPlZVRkXGiCoCjB9CRHfG01DjcgVWYejlUvWDXYbs4fmZ7fWo3eRewNjzD2MCBU76fUGYeYSV1FGTO4Tc92vahLnSEsV9TL/nqYoamkd3gCpZ4tlxhK/ZwnK7tk3ozeq/x74ZYpd+CjbE0BN3iAHdumu/vjJBYht0mkNkr4u/nDVMpesebTr8EiYVZh7bhDdoU4X4VVyBXvvIxFAmvFan7ky0M3lrPDvnypUBReEf7+omJeHuXtBCpe2btaKqQrtS6zPK5BR7h+xpovS0+n5uyg1MHYSg2NslAhkDT4bo5aHFCumCx+JBq27/0= user@DESKTOP-LL9HDCG
+  agent2:
+    build:
+      context: .
+      dockerfile: Dockerfile-agent
+    privileged: true
+    user: root
+    container_name: agent2
+    expose:
+      - 23
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCiXj2x6jKLPOG6DRcf8C99C1a1d3ZgJ2/yQCxdp5MwqLFQk6ZiRpBY6XyBxx2wZdFDRWEJQquw0M2rBufRuC9UlMH2+6nxqUy8OnjvJxj6mBKjAp+g9OpfrVQD/fouMqfiI3xBkvec6LaZUc8T0p1mKvrU4qKiryHHYCNhFM2LWNoyhemGtZeTYFGMdMWq+2l8pWqG8JPlZVRkXGiCoCjB9CRHfG01DjcgVWYejlUvWDXYbs4fmZ7fWo3eRewNjzD2MCBU76fUGYeYSV1FGTO4Tc92vahLnSEsV9TL/nqYoamkd3gCpZ4tlxhK/ZwnK7tk3ozeq/x74ZYpd+CjbE0BN3iAHdumu/vjJBYht0mkNkr4u/nDVMpesebTr8EiYVZh7bhDdoU4X4VVyBXvvIxFAmvFan7ky0M3lrPDvnypUBReEf7+omJeHuXtBCpe2btaKqQrtS6zPK5BR7h+xpovS0+n5uyg1MHYSg2NslAhkDT4bo5aHFCumCx+JBq27/0= user@DESKTOP-LL9HDCG
+  agent3:
+    build:
+      context: .
+      dockerfile: Dockerfile-agent
+    privileged: true
+    user: root
+    container_name: agent3
+    expose:
+      - 24
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCiXj2x6jKLPOG6DRcf8C99C1a1d3ZgJ2/yQCxdp5MwqLFQk6ZiRpBY6XyBxx2wZdFDRWEJQquw0M2rBufRuC9UlMH2+6nxqUy8OnjvJxj6mBKjAp+g9OpfrVQD/fouMqfiI3xBkvec6LaZUc8T0p1mKvrU4qKiryHHYCNhFM2LWNoyhemGtZeTYFGMdMWq+2l8pWqG8JPlZVRkXGiCoCjB9CRHfG01DjcgVWYejlUvWDXYbs4fmZ7fWo3eRewNjzD2MCBU76fUGYeYSV1FGTO4Tc92vahLnSEsV9TL/nqYoamkd3gCpZ4tlxhK/ZwnK7tk3ozeq/x74ZYpd+CjbE0BN3iAHdumu/vjJBYht0mkNkr4u/nDVMpesebTr8EiYVZh7bhDdoU4X4VVyBXvvIxFAmvFan7ky0M3lrPDvnypUBReEf7+omJeHuXtBCpe2btaKqQrtS6zPK5BR7h+xpovS0+n5uyg1MHYSg2NslAhkDT4bo5aHFCumCx+JBq27/0= user@DESKTOP-
+      
+  agent4:
+    build:
+      context: .
+      dockerfile: Dockerfile-agent
+    privileged: true
+    user: root
+    container_name: agent4
+    expose:
+      - 25
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCiXj2x6jKLPOG6DRcf8C99C1a1d3ZgJ2/yQCxdp5MwqLFQk6ZiRpBY6XyBxx2wZdFDRWEJQquw0M2rBufRuC9UlMH2+6nxqUy8OnjvJxj6mBKjAp+g9OpfrVQD/fouMqfiI3xBkvec6LaZUc8T0p1mKvrU4qKiryHHYCNhFM2LWNoyhemGtZeTYFGMdMWq+2l8pWqG8JPlZVRkXGiCoCjB9CRHfG01DjcgVWYejlUvWDXYbs4fmZ7fWo3eRewNjzD2MCBU76fUGYeYSV1FGTO4Tc92vahLnSEsV9TL/nqYoamkd3gCpZ4tlxhK/ZwnK7tk3ozeq/x74ZYpd+CjbE0BN3iAHdumu/vjJBYht0mkNkr4u/nDVMpesebTr8EiYVZh7bhDdoU4X4VVyBXvvIxFAmvFan7ky0M3lrPDvnypUBReEf7+omJeHuXtBCpe2btaKqQrtS6zPK5BR7h+xpovS0+n5uyg1MHYSg2NslAhkDT4bo5aHFCumCx+JBq27/0= user@DESKTOP-LL9HDCG
+
+  agent5:
+    build:
+      context: .
+      dockerfile: Dockerfile-agent
+    privileged: true
+    user: root
+    container_name: agent5
+    expose:
+      - 26
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCiXj2x6jKLPOG6DRcf8C99C1a1d3ZgJ2/yQCxdp5MwqLFQk6ZiRpBY6XyBxx2wZdFDRWEJQquw0M2rBufRuC9UlMH2+6nxqUy8OnjvJxj6mBKjAp+g9OpfrVQD/fouMqfiI3xBkvec6LaZUc8T0p1mKvrU4qKiryHHYCNhFM2LWNoyhemGtZeTYFGMdMWq+2l8pWqG8JPlZVRkXGiCoCjB9CRHfG01DjcgVWYejlUvWDXYbs4fmZ7fWo3eRewNjzD2MCBU76fUGYeYSV1FGTO4Tc92vahLnSEsV9TL/nqYoamkd3gCpZ4tlxhK/ZwnK7tk3ozeq/x74ZYpd+CjbE0BN3iAHdumu/vjJBYht0mkNkr4u/nDVMpesebTr8EiYVZh7bhDdoU4X4VVyBXvvIxFAmvFan7ky0M3lrPDvnypUBReEf7+omJeHuXtBCpe2btaKqQrtS6zPK5BR7h+xpovS0+n5uyg1MHYSg2NslAhkDT4bo5aHFCumCx+JBq27/0= user@DESKTOP-LL9HDCG
