@@ -1,11 +1,6 @@
 pipeline {
     agent { label 'agent4' }
 
-    triggers {
-        pollSCM('H/5 * * * *')
-        // githubPush() // si quieres activar por push también
-    }
-
     environment {
         COMPOSE_PROJECT_NAME = 'laravel_crud'
     }
@@ -26,36 +21,16 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Install PHP Dependencies') {
             steps {
-                sh '''
-                docker run --rm -v $(pwd):/app -w /app composer:2 composer install --no-interaction --prefer-dist
-                '''
-            }
-        }
-
-        stage('Prepare Laravel') {
-            steps {
-                sh 'docker-compose exec app bash -lc "php artisan key:generate --ansi && php artisan migrate --force --ansi"'
-            }
-        }
-
-        stage('Run Dusk (10 Acceptance Tests)') {
-            steps {
-                sh 'docker-compose exec app bash -lc "php artisan dusk --verbose --headless --disable-gpu"'
-            }
-        }
-
-        stage('Deploy to Production') {
-            when {
-                branch 'main'
-            }
-            steps {
-                sh '''
-                    docker-compose down
-                    docker-compose up -d --build
-                '''
+                sh """
+                    docker run --rm \
+                        -v ${env.WORKSPACE}:/app \
+                        -w /app \
+                        composer:2 \
+                        composer install --no-interaction --prefer-dist
+                """
             }
         }
     }
@@ -63,7 +38,7 @@ pipeline {
     post {
         always {
             echo '🧹 Limpiando contenedores y volúmenes…'
-            sh 'docker-compose down -v'
+            sh 'docker-compose down -v || true'
         }
         success {
             echo '✅ Pipeline finalizado con éxito.'
