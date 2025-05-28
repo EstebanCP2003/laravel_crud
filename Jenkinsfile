@@ -1,6 +1,12 @@
 pipeline {
     
-    agent any
+    agent {
+    docker {
+        image 'docker:24.0.7-cli'
+        args '-v /var/run/docker.sock:/var/run/docker.sock'
+    }
+}
+
 
     // Cada vez que haya commits en el repositorio, el pipeline se dispara automáticamente
     triggers {
