@@ -26,11 +26,11 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Install PHP Dependencies') {
             steps {
                 sh '''
-                    docker compose exec app bash -lc "
+                    docker-compose exec app bash -lc "
                       composer install --no-interaction --prefer-dist
                     "
                 '''
@@ -40,7 +40,7 @@ pipeline {
         stage('Prepare Laravel') {
             steps {
                 sh '''
-                    docker compose exec app bash -lc "
+                    docker-compose exec app bash -lc "
                       php artisan key:generate --ansi
                       php artisan migrate --force --ansi
                     "
@@ -51,7 +51,7 @@ pipeline {
         stage('Run Dusk (10 Acceptance Tests)') {
             steps {
                 sh '''
-                    docker compose exec app bash -lc "
+                    docker-compose exec app bash -lc "
                       php artisan dusk --verbose --headless --disable-gpu
                     "
                 '''
@@ -64,8 +64,8 @@ pipeline {
             }
             steps {
                 sh '''
-                    docker compose down
-                    docker compose up -d --build
+                    docker-compose down
+                    docker-compose up -d --build
                 '''
             }
         }
@@ -74,7 +74,7 @@ pipeline {
     post {
         always {
             echo '🧹 Limpiando contenedores y volúmenes…'
-            sh 'docker compose down -v'
+            sh 'docker-compose down -v'
         }
         success {
             echo '✅ Pipeline finalizado con éxito.'
