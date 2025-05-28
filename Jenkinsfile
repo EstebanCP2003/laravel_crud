@@ -14,8 +14,6 @@ pipeline {
             steps {
                 sh '''
                     whoami
-                    ls -l /var/run/docker.sock
-                    docker ps
                     pwd
                     ls -l
                 '''
@@ -31,20 +29,23 @@ pipeline {
         stage('Instalar dependencias Composer') {
             steps {
                 sh '''
-                    docker run --rm -v ${WORKSPACE}:/app -w /app composer:2 composer install --no-interaction --prefer-dist
+                    composer install --no-interaction --prefer-dist
                 '''
             }
         }
 
         stage('Preparar Laravel') {
             steps {
-                sh 'docker-compose exec app bash -lc "php artisan key:generate --ansi && php artisan migrate --force --ansi"'
+                sh '''
+                    docker-compose exec app php artisan key:generate --ansi
+                    docker-compose exec app php artisan migrate --force --ansi
+                '''
             }
         }
 
         stage('Ejecutar Dusk') {
             steps {
-                sh 'docker-compose exec app bash -lc "php artisan dusk --verbose --headless --disable-gpu"'
+                sh 'docker-compose exec app php artisan dusk --verbose --headless --disable-gpu'
             }
         }
 
@@ -74,6 +75,4 @@ pipeline {
         }
     }
 }
-
-
 
