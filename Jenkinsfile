@@ -29,7 +29,9 @@ pipeline {
         
         stage('Install PHP Dependencies') {
             steps {
-                sh 'docker-compose exec app bash -lc "composer install --no-interaction --prefer-dist"'
+                sh '''
+                docker run --rm -v $(pwd):/app -w /app composer:2 composer install --no-interaction --prefer-dist
+                '''
             }
         }
 
