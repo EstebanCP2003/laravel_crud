@@ -29,29 +29,49 @@ pipeline {
         stage('Instalar dependencias Composer') {
             steps {
                 sh '''
-                    docker run --rm \
-                        -v "$PWD":/app \
-                        -w /app \
-                        composer:2 \
-                        composer install --no-interaction --prefer-dist
+                echo "Contenido actual del workspace:"
+                ls -lah
+                echo "Intentando instalar dependencias con Composer..."
+                docker run --rm \
+                -v "$PWD":/var/www/html \
+                -w /var/www/html \
+                composer:2 \
+                composer install --no-interaction --prefer-dist
                 '''
             }
         }
 
+
         stage('Preparar Laravel') {
             steps {
                 sh '''
-                    php artisan key:generate --ansi
-                    php artisan migrate --force --ansi
+                    docker run --rm \
+                        -v "$PWD":/var/www/html \
+                        -w /var/www/html \
+                        php:8.2-cli \
+                        php artisan key:generate --ansi
+
+                    docker run --rm \
+                        -v "$PWD":/var/www/html \
+                        -w /var/www/html \
+                        php:8.2-cli \
+                        php artisan migrate --force --ansi
                 '''
             }
         }
 
         stage('Ejecutar Dusk') {
             steps {
-                sh 'php artisan dusk --verbose --headless --disable-gpu'
+                sh '''
+                    docker run --rm \
+                        -v "$PWD":/var/www/html \
+                        -w /var/www/html \
+                        php:8.2-cli \
+                        php artisan dusk --verbose --headless --disable-gpu
+                '''
             }
         }
+
 
         stage('Deploy a Producción') {
             when {
