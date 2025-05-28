@@ -26,14 +26,7 @@ pipeline {
                 checkout scm
             }
         }
-
-        stage('Build & Start Containers') {
-            steps {
-                sh 'docker-compose down -v'
-                sh 'docker-compose up -d --build --force-recreate'
-            }
-        }
-
+        
         stage('Install PHP Dependencies') {
             steps {
                 sh '''
