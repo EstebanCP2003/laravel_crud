@@ -16,28 +16,22 @@ pipeline {
                     whoami
                     ls -l /var/run/docker.sock
                     docker ps
+                    pwd
+                    ls -l
                 '''
             }
         }
 
-        stage('Checkout & Update Jenkinsfile') {
+        stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Levantar containers Laravel') {
-            steps {
-                sh '''
-                    docker-compose up -d --build --force-recreate
-                '''
             }
         }
 
         stage('Instalar dependencias Composer') {
             steps {
                 sh '''
-                    docker-compose exec app bash -c "composer install --no-interaction --prefer-dist"
+                    docker run --rm -v $(pwd):/app -w /app composer:2 composer install --no-interaction --prefer-dist
                 '''
             }
         }
@@ -45,7 +39,8 @@ pipeline {
         stage('Preparar Laravel') {
             steps {
                 sh '''
-                    docker-compose exec app bash -c "php artisan key:generate --ansi && php artisan migrate --force --ansi"
+                    php artisan key:generate --ansi
+                    php artisan migrate --force --ansi
                 '''
             }
         }
@@ -53,7 +48,7 @@ pipeline {
         stage('Ejecutar Dusk') {
             steps {
                 sh '''
-                    docker-compose exec app bash -c "php artisan dusk --verbose --headless --disable-gpu"
+                    php artisan dusk --verbose --headless --disable-gpu
                 '''
             }
         }
@@ -61,10 +56,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ ¡Todo salió bien!'
+            echo '✅ Pipeline completado correctamente.'
         }
         failure {
-            echo '❌ Algo falló.'
+            echo '❌ El pipeline falló.'
         }
     }
 }
