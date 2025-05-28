@@ -31,7 +31,7 @@ pipeline {
         stage('Instalar dependencias Composer') {
             steps {
                 sh '''
-                    docker run --rm -v /home/jenkins/workspace/laravel:/app -w /app composer:2 composer install --no-interaction --prefer-dist
+                    docker run --rm -v ${WORKSPACE}:/app -w /app composer:2 composer install --no-interaction --prefer-dist
                 '''
             }
         }
@@ -74,5 +74,6 @@ pipeline {
         }
     }
 }
+
 
 
