@@ -29,7 +29,11 @@ pipeline {
         stage('Instalar dependencias Composer') {
             steps {
                 sh '''
-                    composer install --no-interaction --prefer-dist
+                    docker run --rm \
+                        -v "$PWD":/app \
+                        -w /app \
+                        composer:2 \
+                        composer install --no-interaction --prefer-dist
                 '''
             }
         }
@@ -37,15 +41,15 @@ pipeline {
         stage('Preparar Laravel') {
             steps {
                 sh '''
-                    docker-compose exec app php artisan key:generate --ansi
-                    docker-compose exec app php artisan migrate --force --ansi
+                    php artisan key:generate --ansi
+                    php artisan migrate --force --ansi
                 '''
             }
         }
 
         stage('Ejecutar Dusk') {
             steps {
-                sh 'docker-compose exec app php artisan dusk --verbose --headless --disable-gpu'
+                sh 'php artisan dusk --verbose --headless --disable-gpu'
             }
         }
 
