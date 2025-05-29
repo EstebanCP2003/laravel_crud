@@ -28,15 +28,24 @@ pipeline {
 
         stage('Ejecutar Dusk') {
             steps {
-                sh '''
-                    docker run --rm \
-                        -v "$PWD":/app \
-                        -w /app \
-                        dusk-runner \
-                        php artisan dusk --headless --disable-gpu
-                '''
+                dir('') {
+                    sh '''
+                        if [ ! -f artisan ]; then
+                          echo "❌ No se encontró el archivo artisan en $(pwd)"
+                          ls -lah
+                          exit 1
+                        fi
+
+                        docker run --rm \
+                            -v "$PWD":/var/www/html \
+                            -w /var/www/html \
+                            dusk-runner \
+                            php artisan dusk --headless --disable-gpu
+                    '''
+                }
             }
         }
+
 
         stage('Deploy a Producción') {
             when {
