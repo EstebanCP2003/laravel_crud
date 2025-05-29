@@ -26,25 +26,6 @@ pipeline {
             }
         }
 
-        stage('Preparar Laravel') {
-            steps {
-                sh '''
-                    docker build -f Dockerfile.dusk -t dusk-runner .
-                    docker run --rm \
-                        -v "$PWD":/app \
-                        -w /app \
-                        dusk-runner \
-                        php artisan key:generate --ansi
-
-                    docker run --rm \
-                        -v "$PWD":/app \
-                        -w /app \
-                        dusk-runner \
-                        php artisan migrate --force --ansi
-                '''
-            }
-        }
-
         stage('Ejecutar Dusk') {
             steps {
                 sh '''
