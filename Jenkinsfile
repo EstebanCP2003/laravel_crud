@@ -38,7 +38,7 @@ pipeline {
         stage('Ejecutar Dusk') {
             steps {
                 sh '''
-                    echo " Ejecutando pruebas con Laravel Dusk..."
+                    echo "🎯 Ejecutando pruebas con Laravel Dusk..."
                     php artisan dusk --verbose --headless --disable-gpu
                 '''
             }
