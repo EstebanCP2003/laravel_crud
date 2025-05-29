@@ -30,14 +30,14 @@ pipeline {
             steps {
                 sh '''
                     docker run --rm \
-                        -v "$PWD":/var/www/html \
-                        -w /var/www/html \
+                        -v "$PWD":/app \
+                        -w /app \
                         laravelsail/php82-composer \
                         php artisan key:generate --ansi
 
                     docker run --rm \
-                        -v "$PWD":/var/www/html \
-                        -w /var/www/html \
+                        -v "$PWD":/app \
+                        -w /app \
                         laravelsail/php82-composer \
                         php artisan migrate --force --ansi
                 '''
@@ -48,8 +48,8 @@ pipeline {
             steps {
                 sh '''
                     docker run --rm \
-                        -v "$PWD":/var/www/html \
-                        -w /var/www/html \
+                        -v "$PWD":/app \
+                        -w /app \
                         --add-host=host.docker.internal:host-gateway \
                         laravelsail/php82-composer \
                         php artisan dusk --headless --disable-gpu
