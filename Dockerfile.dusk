@@ -1,0 +1,11 @@
+# Dockerfile.dusk
+FROM laravelsail/php82-composer
+
+# Instalar dependencias necesarias para Laravel Dusk
+RUN apt-get update && \
+    apt-get install -y unzip libzip-dev libpng-dev libonig-dev libxml2-dev curl gnupg2 ca-certificates sudo && \
+    apt-get install -y chromium wget && \
+    ln -s /usr/bin/chromium /usr/bin/google-chrome
+
+# Instalar Dusk y ChromeDriver si no está ya
+RUN composer global require laravel/dusk
