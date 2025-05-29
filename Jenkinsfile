@@ -26,6 +26,23 @@ pipeline {
             }
         }
 
+        stage('Preparar Laravel') {
+            steps {
+                sh '''
+                    php artisan key:generate --ansi
+                    php artisan migrate --force --ansi
+                '''
+            }
+        }
+
+        stage('Ejecutar Dusk') {
+            steps {
+                sh '''
+                    echo " Ejecutando pruebas con Laravel Dusk..."
+                    php artisan dusk --verbose --headless --disable-gpu
+                '''
+            }
+        }
 
         stage('Deploy a Producción') {
             when {
@@ -53,4 +70,3 @@ pipeline {
         }
     }
 }
-
