@@ -29,8 +29,17 @@ pipeline {
         stage('Preparar Laravel') {
             steps {
                 sh '''
-                    php artisan key:generate --ansi
-                    php artisan migrate --force --ansi
+                    docker run --rm \
+                        -v "$PWD":/var/www/html \
+                        -w /var/www/html \
+                        laravelsail/php82-composer \
+                        php artisan key:generate --ansi
+
+                    docker run --rm \
+                        -v "$PWD":/var/www/html \
+                        -w /var/www/html \
+                        laravelsail/php82-composer \
+                        php artisan migrate --force --ansi
                 '''
             }
         }
@@ -38,8 +47,12 @@ pipeline {
         stage('Ejecutar Dusk') {
             steps {
                 sh '''
-                    echo "🎯 Ejecutando pruebas con Laravel Dusk..."
-                    php artisan dusk --verbose --headless --disable-gpu
+                    docker run --rm \
+                        -v "$PWD":/var/www/html \
+                        -w /var/www/html \
+                        --add-host=host.docker.internal:host-gateway \
+                        laravelsail/php82-composer \
+                        php artisan dusk --headless --disable-gpu
                 '''
             }
         }
@@ -70,3 +83,4 @@ pipeline {
         }
     }
 }
+
