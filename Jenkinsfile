@@ -29,16 +29,17 @@ pipeline {
         stage('Preparar Laravel') {
             steps {
                 sh '''
+                    docker build -f Dockerfile.dusk -t dusk-runner .
                     docker run --rm \
                         -v "$PWD":/app \
                         -w /app \
-                        laravelsail/php82-composer \
+                        dusk-runner \
                         php artisan key:generate --ansi
 
                     docker run --rm \
                         -v "$PWD":/app \
                         -w /app \
-                        laravelsail/php82-composer \
+                        dusk-runner \
                         php artisan migrate --force --ansi
                 '''
             }
@@ -50,8 +51,7 @@ pipeline {
                     docker run --rm \
                         -v "$PWD":/app \
                         -w /app \
-                        --add-host=host.docker.internal:host-gateway \
-                        laravelsail/php82-composer \
+                        dusk-runner \
                         php artisan dusk --headless --disable-gpu
                 '''
             }
