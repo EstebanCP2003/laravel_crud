@@ -40,7 +40,7 @@ pipeline {
                             -v "$PWD":/var/www/html \
                             -w /var/www/html \
                             dusk-runner \
-                            php artisan dusk --headless --disable-gpu
+                            php /var/www/html/artisan dusk --headless --disable-gpu
                     '''
                 }
             }
