@@ -64,7 +64,7 @@
                                                 <td>{{ $producto->sku }}</td>
                                                 <td>${{ $producto->precio }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($producto->created_at)->format('d M, Y')}}</td>
-                                                <td>{{ $producto->descripcion }}</td>
+                                                <td class="descripciones">{{ $producto->descripcion }}</td>
                                                 {{-- <td><img src="{{ asset('upload/Productos' . $producto->imagen) }}" alt="{{ $producto->nombre }}" width="100"></td> --}}
                                                 <td>
                                                     <div class="d-flex gap-2 justify-content-center">
@@ -88,6 +88,12 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
     <script>
+        const descripcion = document.querySelectorAll('.descripciones');
+        descripcion.forEach((desc) => {
+            if(desc.innerHTML.length > 50){
+                desc.innerHTML = desc.innerHTML.substring(0, 50) + '...';
+            }
+        });
         function Eliminar(id){
             if(confirm("¿Está seguro de eliminar este producto?")){
                 document.getElementById('eliminar-form-'+id).submit();
